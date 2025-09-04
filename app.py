@@ -54,7 +54,7 @@ if len(peaks) > 1:
     rr_intervals = np.diff(t_ecg[peaks])
     mean_rr = np.mean(rr_intervals)  # in seconds
     avg_hr_hz = 1 / mean_rr          # Hz
-    avg_hr_bpm = avg_hr_hz * 1      # BPM
+    avg_hr_bpm = avg_hr_hz * 60      # BPM
 else:
     avg_hr_hz = np.nan
     avg_hr_bpm = np.nan
