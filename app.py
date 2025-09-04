@@ -73,20 +73,20 @@ if uploaded_file is not None:
     ax.legend()
     st.pyplot(fig)
 
-    # -----------------------------
-    # --- Optional: download filtered BCG ---
-    # -----------------------------
-    df_filtered = pd.DataFrame({"Time": t_bcg, "BCG_filtered": bcg_filtered})
-    def to_excel(df):
-        output = BytesIO()
-        with pd.ExcelWriter(output, engine='openpyxl') as writer:
-            df.to_excel(writer, index=False, sheet_name='BCG_filtered')
-        return output.getvalue()
+    # # -----------------------------
+    # # --- Optional: download filtered BCG ---
+    # # -----------------------------
+    # df_filtered = pd.DataFrame({"Time": t_bcg, "BCG_filtered": bcg_filtered})
+    # def to_excel(df):
+    #     output = BytesIO()
+    #     with pd.ExcelWriter(output, engine='openpyxl') as writer:
+    #         df.to_excel(writer, index=False, sheet_name='BCG_filtered')
+    #     return output.getvalue()
 
-    excel_data = to_excel(df_filtered)
-    st.download_button(
-        label="📥 Download Filtered BCG",
-        data=excel_data,
-        file_name=f"{subject}_BCG_filtered.xlsx",
-        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    )
+    # excel_data = to_excel(df_filtered)
+    # st.download_button(
+    #     label="📥 Download Filtered BCG",
+    #     data=excel_data,
+    #     file_name=f"{subject}_BCG_filtered.xlsx",
+    #     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    # )
