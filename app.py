@@ -45,8 +45,8 @@ if uploaded_file is not None:
     # --- Interactive sliders for BCG ---
     # -----------------------------
     st.subheader("Band-Pass Filter for BCG")
-    lowcut = st.slider("Low Cutoff Frequency (Hz)", 0.1, 10.0, 0.5, 0.1)
-    highcut = st.slider("High Cutoff Frequency (Hz)", 1.0, 60.0, 5.0, 0.5)
+    lowcut = st.slider("Low Cutoff Frequency (Hz)", 0.1, 10.0, 0.5, 0.01)
+    highcut = st.slider("High Cutoff Frequency (Hz)", 1.0, 60.0, 5.0, 0.01)
 
     if lowcut >= highcut:
         st.warning("⚠️ Low cutoff must be smaller than high cutoff")
