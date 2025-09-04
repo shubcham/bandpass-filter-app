@@ -62,7 +62,14 @@ except Exception as e:
     st.warning(f"HR sheet not found or invalid format: {e}")
     hr_value = np.nan
 
-st.write(f"**Average Heart Rate:** {hr_value:.2f} Hz")
+# -----------------------------
+# --- Display HR safely ---
+# -----------------------------
+if isinstance(hr_value, (int, float)) and not np.isnan(hr_value):
+    st.write(f"**Average Heart Rate:** {hr_value:.2f} Hz")
+else:
+    st.write("**Average Heart Rate:** Not available")
+
 
 # -----------------------------
 # --- Interactive sliders for BCG ---
