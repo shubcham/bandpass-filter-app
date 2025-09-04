@@ -18,8 +18,11 @@ def bandpass_filter(data, lowcut, highcut, fs, order=4):
 # -----------------------------
 # --- Normalization Helper ---
 # -----------------------------
-def normalize_signal(sig):
-    return (sig - np.min(sig)) / (np.max(sig) - np.min(sig))
+def robust_normalize(sig, low_percentile=5, high_percentile=95):
+    low = np.percentile(sig, low_percentile)
+    high = np.percentile(sig, high_percentile)
+    sig_clipped = np.clip(sig, low, high)          # clip outliers
+    return (sig_clipped - low) / (high - low)
 
 # -----------------------------
 # --- Load Excel & Prepare Subjects ---
@@ -103,8 +106,8 @@ bcg_resampled = interp_bcg(t_ecg)
 # -----------------------------
 # --- Normalize AFTER filtering ---
 # -----------------------------
-bcg_norm = normalize_signal(bcg_resampled)
-ecg_norm = normalize_signal(ecg)
+bcg_norm = robust_normalize(bcg_resampled)
+ecg_norm = robust_normalize(ecg)
 
 
 # Determine legend label safely
