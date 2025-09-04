@@ -88,7 +88,7 @@ with col2:
 
 # Decide which values to use (manual input overrides slider if changed)
 lowcut = lowcut_input if lowcut_input != 0.5 else lowcut_slider
-highcut = highcut_input if highcut_input != 7.0 else highcut_slider
+highcut = highcut_input if highcut_input != 5.0 else highcut_slider
 
 if lowcut >= highcut:
     st.warning("⚠️ Low cutoff must be smaller than high cutoff")
@@ -129,8 +129,8 @@ fig.update_layout(
     title_font=dict(size=24, family="Arial", color="black"),  # Bigger title
     xaxis_title="Time [s]",
     yaxis_title="Amplitude (log-scaled)",
-    xaxis=dict(title_font=dict(size=20), tickfont=dict(size=20)),  # Bigger x-axis labels
-    yaxis=dict(title_font=dict(size=20), tickfont=dict(size=20)),  # Bigger y-axis labels
+    xaxis=dict(title_font=dict(size=20), tickfont=dict(size=16)),  # Bigger x-axis labels
+    yaxis=dict(title_font=dict(size=20), tickfont=dict(size=16)),  # Bigger y-axis labels
     legend=dict(font=dict(size=20)),  # Bigger legend font
     width=900,
     height=600,
