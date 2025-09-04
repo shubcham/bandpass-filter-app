@@ -5,6 +5,9 @@ from scipy.signal import butter, filtfilt
 from scipy.interpolate import interp1d
 import plotly.graph_objects as go
 
+# Set page configuration for wide mode
+st.set_page_config(layout="wide")
+
 # -----------------------------
 # --- Helper: Bandpass Filter ---
 # -----------------------------
@@ -103,6 +106,9 @@ fig.update_layout(
     title="ECG and BCG Overlay",
     xaxis_title="Time [s]",
     yaxis_title="Amplitude (log-scaled)",
+    width=1200,  # Set a larger width
+    height=600,  # Set a larger height
+    margin=dict(l=40, r=40, t=60, b=40),  # Adjust margins
     hovermode='x unified'
 )
 
