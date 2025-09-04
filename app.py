@@ -68,9 +68,6 @@ else:
     ecg_label = 'ECG, HR=NA'
 
 # -----------------------------
-# --- Interactive sliders for BCG ---
-# -----------------------------
-# -----------------------------
 # --- Interactive sliders & manual input for BCG ---
 # -----------------------------
 st.subheader("Band-Pass Filter for BCG")
@@ -124,8 +121,8 @@ fig.update_layout(
     title="ECG and BCG Overlay",
     xaxis_title="Time [s]",
     yaxis_title="Amplitude (log-scaled)",
-    width=1200,  # Set a larger width
-    height=600,  # Set a larger height
+    width=900,  # Reduced width from 1200 to 900
+    height=600,  # Kept height the same
     margin=dict(l=40, r=40, t=60, b=40),  # Adjust margins
     hovermode='x unified'
 )
