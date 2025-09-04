@@ -50,22 +50,25 @@ t_ecg = df_ecg['Time_ECG'].values
 # --- Load HR from HR Sheet ---
 # -----------------------------
 try:
-    # Read HR sheet without assuming a header
     df_hr = pd.read_excel(excel_file, sheet_name=f"{subject}_HR", header=None)
-    
-    # Flatten all values to 1D and remove NaNs
     hr_values = df_hr.to_numpy().flatten()
-    hr_values = [v for v in hr_values if pd.notna(v)]
-    
-    # Take the first numeric value
+    # Keep only numeric values
+    hr_values = [v for v in hr_values if pd.notna(v) and isinstance(v, (int, float))]
     if len(hr_values) > 0:
         hr_value = hr_values[0]
     else:
         hr_value = np.nan
-
 except Exception as e:
     st.warning(f"HR sheet not found or invalid format: {e}")
     hr_value = np.nan
+
+# Display HR safely
+if isinstance(hr_value, (int, float)) and not np.isnan(hr_value):
+    st.write(f"**Average Heart Rate:** {hr_value:.2f} Hz")
+    ecg_label = f'ECG, HR={hr_value:.2f} Hz'
+else:
+    st.write("**Average Heart Rate:** Not available")
+    ecg_label = 'ECG, HR=NA'
 
 
 # -----------------------------
