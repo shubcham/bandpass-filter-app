@@ -59,7 +59,7 @@ else:
     avg_hr_hz = np.nan
     avg_hr_bpm = np.nan
 
-st.write(f"**Average Heart Rate:** {avg_hr_hz:.2f} Hz ({avg_hr_bpm:.0f} BPM)")
+st.write(f"**Average Heart Rate:** {mean_rr:.2f} Hz ({avg_hr_bpm:.0f} BPM)")
 
 # -----------------------------
 # --- Interactive sliders for BCG ---
