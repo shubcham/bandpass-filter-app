@@ -64,7 +64,7 @@ except Exception as e:
 
 # Display HR safely
 if isinstance(hr_value, (int, float)) and not np.isnan(hr_value):
-    st.write(f"**Average Heart Rate:** {hr_value:.2f} Hz")
+    st.write(f"**Average Heart Rate:** {hr_value:.2f} BPM ({hr_value/60:.2f})")
     ecg_label = f'ECG, HR={hr_value:.2f} Hz'
 else:
     st.write("**Average Heart Rate:** Not available")
