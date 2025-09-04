@@ -35,7 +35,6 @@ sheets = xl.sheet_names
 
 subjects = sorted(list(set([s.split('_')[0] for s in sheets])))
 st.markdown("<h3 style='font-weight:bold'>Select Subject</h3>", unsafe_allow_html=True)
-
 subject = st.selectbox("Select Subject", subjects)
 
 # -----------------------------
@@ -63,6 +62,7 @@ except Exception as e:
 
 # HR display
 if isinstance(hr_value, (int, float)) and not np.isnan(hr_value):
+    st.markdown("<h3 style='font-weight:bold'>Select Subject</h3>", unsafe_allow_html=True)
     st.write(f"**Average Heart Rate:** {hr_value:.2f} BPM ({hr_value/60:.3f} Hz)")
     ecg_label = f'ECG, HR={hr_value/60:.3f} Hz'
 else:
