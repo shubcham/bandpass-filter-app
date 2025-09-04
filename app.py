@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.signal import butter, filtfilt
+from scipy.signal import butter, filtfilt, find_peaks
 from scipy.interpolate import interp1d
 
 # -----------------------------
@@ -45,6 +45,23 @@ ecg = df_ecg['ECG'].values
 t_ecg = df_ecg['Time_ECG'].values
 
 # -----------------------------
+# --- Calculate Average Heart Rate from ECG ---
+# -----------------------------
+# Simple R-peak detection
+peaks, _ = find_peaks(ecg, prominence=0.5 * np.std(ecg))
+
+if len(peaks) > 1:
+    rr_intervals = np.diff(t_ecg[peaks])
+    mean_rr = np.mean(rr_intervals)  # in seconds
+    avg_hr_hz = 1 / mean_rr          # Hz
+    avg_hr_bpm = avg_hr_hz * 60      # BPM
+else:
+    avg_hr_hz = np.nan
+    avg_hr_bpm = np.nan
+
+st.write(f"**Average Heart Rate:** {avg_hr_hz:.2f} Hz ({avg_hr_bpm:.0f} BPM)")
+
+# -----------------------------
 # --- Interactive sliders for BCG ---
 # -----------------------------
 st.subheader("Band-Pass Filter for BCG")
@@ -71,11 +88,11 @@ bcg_norm = normalize_signal(bcg_resampled)
 ecg_norm = normalize_signal(ecg)
 
 # -----------------------------
-# --- Plot overlay ---
+# --- Plot overlay with HR in legend ---
 # -----------------------------
 st.subheader("Signals Overlay")
 fig, ax = plt.subplots(figsize=(10, 5))
-ax.plot(t_ecg, ecg_norm, label='ECG', color='red', alpha=0.5)   # ECG semi-transparent
+ax.plot(t_ecg, ecg_norm, label=f'ECG, HR={avg_hr_hz:.2f} Hz', color='red', alpha=0.5)
 ax.plot(t_ecg, bcg_norm, label='Filtered BCG', color='blue')
 ax.set_xlabel("Time [s]")
 ax.set_ylabel("Normalized Amplitude (0-1)")
