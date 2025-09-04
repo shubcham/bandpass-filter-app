@@ -18,8 +18,8 @@ def bandpass_filter(data, lowcut, highcut, fs, order=4):
 # -----------------------------
 # --- Normalization Helper ---
 # -----------------------------
-def zscore_normalize(sig):
-    return (sig - np.mean(sig)) / np.std(sig)
+def log_scale(sig):
+    return np.sign(sig) * np.log1p(np.abs(sig))
 
 # -----------------------------
 # --- Load Excel & Prepare Subjects ---
@@ -103,8 +103,8 @@ bcg_resampled = interp_bcg(t_ecg)
 # -----------------------------
 # --- Normalize AFTER filtering ---
 # -----------------------------
-bcg_norm = zscore_normalize(bcg_resampled)
-ecg_norm = zscore_normalize(ecg)
+bcg_norm = log_scale(bcg_resampled)
+ecg_norm = log_scale(ecg)
 
 
 # Determine legend label safely
