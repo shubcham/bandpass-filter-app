@@ -70,9 +70,27 @@ else:
 # -----------------------------
 # --- Interactive sliders for BCG ---
 # -----------------------------
+# -----------------------------
+# --- Interactive sliders & manual input for BCG ---
+# -----------------------------
 st.subheader("Band-Pass Filter for BCG")
-lowcut = st.slider("Low Cutoff Frequency (Hz)", 0.1, 10.0, 0.5, 0.01)
-highcut = st.slider("High Cutoff Frequency (Hz)", 1.0, 60.0, 5.0, 0.01)
+
+# Create two columns: slider + manual input
+col1, col2 = st.columns(2)
+
+with col1:
+    lowcut_slider = st.slider("Low Cutoff Frequency (Hz)", 0.1, 10.0, 0.5, 0.01)
+with col2:
+    lowcut_input = st.number_input("Low Cutoff Manual Input (Hz)", min_value=0.01, max_value=10.0, value=0.5, step=0.01)
+
+with col1:
+    highcut_slider = st.slider("High Cutoff Frequency (Hz)", 1.0, 60.0, 5.0, 0.01)
+with col2:
+    highcut_input = st.number_input("High Cutoff Manual Input (Hz)", min_value=0.1, max_value=60.0, value=5.0, step=0.01)
+
+# Decide which values to use (manual input overrides slider if changed)
+lowcut = lowcut_input if lowcut_input != 0.5 else lowcut_slider
+highcut = highcut_input if highcut_input != 5.0 else highcut_slider
 
 if lowcut >= highcut:
     st.warning("⚠️ Low cutoff must be smaller than high cutoff")
