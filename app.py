@@ -115,11 +115,11 @@ else:
 
 # Plot overlay
 st.subheader("Signals Overlay")
-fig, ax = plt.subplots(figsize=(5, 2))
+fig, ax = plt.subplots(figsize=(15, 5))  # wider figure
 ax.plot(t_ecg, ecg_norm, label=ecg_label, color='red', alpha=0.5)
 ax.plot(t_ecg, bcg_norm, label='Filtered BCG', color='blue')
 ax.set_xlabel("Time [s]")
 ax.set_ylabel("Normalized Amplitude (0-1)")
 ax.legend()
-st.pyplot(fig)
+st.pyplot(fig, use_container_width=True)  # stretch horizontally
 
