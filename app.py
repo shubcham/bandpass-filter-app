@@ -73,22 +73,15 @@ else:
 # -----------------------------
 st.subheader("Band-Pass Filter for BCG")
 
-# Create two columns: slider + manual input
-col1, col2 = st.columns(2)
+# Let user choose input method
+input_mode = st.radio("Choose input method:", ["Slider", "Manual Input"])
 
-with col1:
-    lowcut_slider = st.slider("Low Cutoff Frequency (Hz)", 0.1, 4.0, 0.5, 0.01)
-with col2:
-    lowcut_input = st.number_input("Low Cutoff Manual Input (Hz)", min_value=0.01, max_value=10.0, value=0.5, step=0.01)
-
-with col1:
-    highcut_slider = st.slider("High Cutoff Frequency (Hz)", 1.0, 7.0, 2.0, 0.01)
-with col2:
-    highcut_input = st.number_input("High Cutoff Manual Input (Hz)", min_value=0.1, max_value=60.0, value=5.0, step=0.01)
-
-# Decide which values to use (manual input overrides slider if changed)
-lowcut = lowcut_input if lowcut_input != 0.5 else lowcut_slider
-highcut = highcut_input if highcut_input != 5.0 else highcut_slider
+if input_mode == "Slider":
+    lowcut = st.slider("Low Cutoff Frequency (Hz)", 0.1, 4.0, 0.5, 0.01)
+    highcut = st.slider("High Cutoff Frequency (Hz)", 1.0, 7.0, 2.0, 0.01)
+else:
+    lowcut = st.number_input("Low Cutoff Frequency (Hz)", min_value=0.01, max_value=10.0, value=0.5, step=0.01)
+    highcut = st.number_input("High Cutoff Frequency (Hz)", min_value=0.1, max_value=60.0, value=5.0, step=0.01)
 
 if lowcut >= highcut:
     st.warning("⚠️ Low cutoff must be smaller than high cutoff")
@@ -96,6 +89,7 @@ if lowcut >= highcut:
 else:
     fs_bcg = 1 / np.mean(np.diff(t_bcg))
     bcg_filtered = bandpass_filter(bcg, lowcut, highcut, fs_bcg)
+
 
 # -----------------------------
 # --- Interpolate BCG to ECG time ---
