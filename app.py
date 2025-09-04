@@ -121,7 +121,7 @@ fig.update_layout(
     title="ECG and BCG Overlay",
     xaxis_title="Time [s]",
     yaxis_title="Amplitude (log-scaled)",
-    width=900,  # Reduced width from 1200 to 900
+    width=700,  # Reduced width from 1200 to 900
     height=600,  # Kept height the same
     margin=dict(l=40, r=40, t=60, b=40),  # Adjust margins
     hovermode='x unified'
