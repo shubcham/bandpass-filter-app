@@ -79,9 +79,8 @@ if uploaded_file is not None:
     df_filtered = pd.DataFrame({"Time": t_bcg, "BCG_filtered": bcg_filtered})
     def to_excel(df):
         output = BytesIO()
-        writer = pd.ExcelWriter(output, engine='openpyxl')
-        df.to_excel(writer, index=False, sheet_name='BCG_filtered')
-        writer.save()
+        with pd.ExcelWriter(output, engine='openpyxl') as writer:
+            df.to_excel(writer, index=False, sheet_name='BCG_filtered')
         return output.getvalue()
 
     excel_data = to_excel(df_filtered)
