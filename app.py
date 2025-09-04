@@ -88,7 +88,7 @@ with col2:
 
 # Decide which values to use (manual input overrides slider if changed)
 lowcut = lowcut_input if lowcut_input != 0.5 else lowcut_slider
-highcut = highcut_input if highcut_input != 5.0 else highcut_slider
+highcut = highcut_input if highcut_input != 2.0 else highcut_slider
 
 if lowcut >= highcut:
     st.warning("⚠️ Low cutoff must be smaller than high cutoff")
