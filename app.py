@@ -97,14 +97,20 @@ bcg_resampled = interp_bcg(t_ecg)
 bcg_norm = normalize_signal(bcg_resampled)
 ecg_norm = normalize_signal(ecg)
 
-# -----------------------------
-# --- Plot overlay with HR in legend ---
-# -----------------------------
+
+# Determine legend label safely
+if isinstance(hr_value, (int, float)) and not np.isnan(hr_value):
+    ecg_label = f'ECG, HR={hr_value:.2f} Hz'
+else:
+    ecg_label = 'ECG, HR=NA'
+
+# Plot overlay
 st.subheader("Signals Overlay")
 fig, ax = plt.subplots(figsize=(10, 5))
-ax.plot(t_ecg, ecg_norm, label=f'ECG, HR={hr_value:.2f} Hz', color='red', alpha=0.5)
+ax.plot(t_ecg, ecg_norm, label=ecg_label, color='red', alpha=0.5)
 ax.plot(t_ecg, bcg_norm, label='Filtered BCG', color='blue')
 ax.set_xlabel("Time [s]")
 ax.set_ylabel("Normalized Amplitude (0-1)")
 ax.legend()
 st.pyplot(fig)
+
