@@ -107,7 +107,7 @@ fig.update_layout(
 )
 
 # Enable zooming, panning, and reset axes
-fig.update_xaxes(rangeslider_visible=True)  # optional: mini range slider
+fig.update_xaxes(fixedrange=False)
 fig.update_yaxes(fixedrange=False)
 
 st.plotly_chart(fig, use_container_width=True)
