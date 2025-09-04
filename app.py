@@ -79,12 +79,12 @@ col1, col2 = st.columns(2)
 with col1:
     lowcut_slider = st.slider("Low Cutoff Frequency (Hz)", 0.1, 4.0, 0.5, 0.01)
 with col2:
-    lowcut_input = st.number_input("Low Cutoff Manual Input (Hz)", min_value=0.01, max_value=10.0, value=0.5, step=0.01)
+    lowcut_input = st.number_input("Low Cutoff Manual Input (Hz)", min_value=0.01, max_value=4.0, value=0.5, step=0.01)
 
 with col1:
     highcut_slider = st.slider("High Cutoff Frequency (Hz)", 1.0, 7.0, 2.0, 0.01)
 with col2:
-    highcut_input = st.number_input("High Cutoff Manual Input (Hz)", min_value=0.1, max_value=60.0, value=5.0, step=0.01)
+    highcut_input = st.number_input("High Cutoff Manual Input (Hz)", min_value=0.1, max_value=7.0, value=2.0, step=0.01)
 
 # Decide which values to use (manual input overrides slider if changed)
 lowcut = lowcut_input if lowcut_input != 0.5 else lowcut_slider
