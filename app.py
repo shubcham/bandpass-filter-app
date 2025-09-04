@@ -129,9 +129,9 @@ fig.update_layout(
     title_font=dict(size=24, family="Arial", color="black"),  # Bigger title
     xaxis_title="Time [s]",
     yaxis_title="Amplitude (log-scaled)",
-    xaxis=dict(title_font=dict(size=20), tickfont=dict(size=16)),  # Bigger x-axis labels
-    yaxis=dict(title_font=dict(size=20), tickfont=dict(size=16)),  # Bigger y-axis labels
-    legend=dict(font=dict(size=16)),  # Bigger legend font
+    xaxis=dict(title_font=dict(size=20), tickfont=dict(size=20)),  # Bigger x-axis labels
+    yaxis=dict(title_font=dict(size=20), tickfont=dict(size=20)),  # Bigger y-axis labels
+    legend=dict(font=dict(size=20)),  # Bigger legend font
     width=900,
     height=600,
     margin=dict(l=40, r=40, t=60, b=40),
