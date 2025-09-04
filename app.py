@@ -115,7 +115,7 @@ else:
 
 # Plot overlay
 st.subheader("Signals Overlay")
-fig, ax = plt.subplots(figsize=(10, 5))
+fig, ax = plt.subplots(figsize=(20, 7))
 ax.plot(t_ecg, ecg_norm, label=ecg_label, color='red', alpha=0.5)
 ax.plot(t_ecg, bcg_norm, label='Filtered BCG', color='blue')
 ax.set_xlabel("Time [s]")
