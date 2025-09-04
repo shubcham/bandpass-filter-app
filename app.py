@@ -16,11 +16,17 @@ def bandpass_filter(data, lowcut, highcut, fs, order=4):
     return filtfilt(b, a, data)
 
 # -----------------------------
+# --- Normalization Helper ---
+# -----------------------------
+def normalize_signal(sig):
+    return (sig - np.min(sig)) / (np.max(sig) - np.min(sig))
+
+# -----------------------------
 # --- Load Excel & Prepare Subjects ---
 # -----------------------------
 st.title("Interactive BCG + ECG Viewer (Single Excel)")
 
-# Directly read Main_excel.xlsx from repo
+# Read Main_excel.xlsx from repo
 excel_file = "Main_excel.xlsx"
 xl = pd.ExcelFile(excel_file)
 sheets = xl.sheet_names
@@ -59,13 +65,19 @@ interp_bcg = interp1d(t_bcg, bcg_filtered, kind='linear', bounds_error=False, fi
 bcg_resampled = interp_bcg(t_ecg)
 
 # -----------------------------
+# --- Normalize AFTER filtering ---
+# -----------------------------
+bcg_norm = normalize_signal(bcg_resampled)
+ecg_norm = normalize_signal(ecg)
+
+# -----------------------------
 # --- Plot overlay ---
 # -----------------------------
 st.subheader("Signals Overlay")
 fig, ax = plt.subplots(figsize=(10, 5))
-ax.plot(t_ecg, ecg, label='ECG', color='red')
-ax.plot(t_ecg, bcg_resampled, label='Filtered BCG', color='blue')
+ax.plot(t_ecg, ecg_norm, label='ECG', color='red', alpha=0.5)   # ECG semi-transparent
+ax.plot(t_ecg, bcg_norm, label='Filtered BCG', color='blue')
 ax.set_xlabel("Time [s]")
-ax.set_ylabel("Amplitude")
+ax.set_ylabel("Normalized Amplitude (0-1)")
 ax.legend()
 st.pyplot(fig)

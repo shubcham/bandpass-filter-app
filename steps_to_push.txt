@@ -1,0 +1,4 @@
+git add .
+git commit -m "Updated Streamlit app with multiple subjects and dropdown"
+git branch -M main  # rename branch to main if needed
+git push -u origin main
