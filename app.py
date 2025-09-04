@@ -1,10 +1,13 @@
 import streamlit as st
+import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.signal import butter, filtfilt
+from scipy.interpolate import interp1d
+from io import BytesIO
 
 # -----------------------------
-# Helper: bandpass filter
+# --- Helper: Bandpass Filter ---
 # -----------------------------
 def bandpass_filter(data, lowcut, highcut, fs, order=4):
     nyq = 0.5 * fs
@@ -14,30 +17,77 @@ def bandpass_filter(data, lowcut, highcut, fs, order=4):
     return filtfilt(b, a, data)
 
 # -----------------------------
-# Streamlit App
+# --- Load Excel & Prepare Subjects ---
 # -----------------------------
-st.title("Interactive Band-Pass Filter Demo")
+st.title("Interactive BCG + ECG Viewer (Single Excel)")
 
-# Simulated raw signal (replace with file upload if needed)
-fs = 1000  # sampling rate
-t = np.linspace(0, 2, 2*fs, endpoint=False)
-raw_signal = np.sin(2*np.pi*5*t) + 0.5*np.sin(2*np.pi*50*t)
+# Upload Excel file
+uploaded_file = st.file_uploader("Upload Excel file with all subjects", type=["xlsx"])
+if uploaded_file is not None:
+    # Read all sheet names
+    xl = pd.ExcelFile(uploaded_file)
+    sheets = xl.sheet_names
 
-# Sliders for cutoff frequencies (all floats)
-lowcut = st.slider("Low Cutoff Frequency (Hz)", 0.5, 5.0, 1.0, 0.1)
-highcut = st.slider("High Cutoff Frequency (Hz)", 5.0, 100.0, 20.0, 0.5)
+    # Extract unique subjects based on sheet naming: e.g., "sub1_BCG" -> "sub1"
+    subjects = sorted(list(set([s.split('_')[0] for s in sheets])))
+    subject = st.selectbox("Select Subject", subjects)
 
-# Apply band-pass filter
-if lowcut < highcut:
-    filtered_signal = bandpass_filter(raw_signal, lowcut, highcut, fs)
-else:
-    st.warning("⚠️ Low cutoff must be smaller than high cutoff")
-    filtered_signal = raw_signal
+    # Load BCG & ECG sheets for selected subject
+    df_bcg = pd.read_excel(uploaded_file, sheet_name=f"{subject}_BCG")
+    df_ecg = pd.read_excel(uploaded_file, sheet_name=f"{subject}_ECG")
 
-# Plot
-fig, ax = plt.subplots(2, 1, figsize=(8, 6), sharex=True)
-ax[0].plot(t, raw_signal, color='gray')
-ax[0].set_title("Raw Signal")
-ax[1].plot(t, filtered_signal, color='blue')
-ax[1].set_title(f"Filtered Signal ({lowcut}-{highcut} Hz)")
-st.pyplot(fig)
+    bcg = df_bcg['BCG'].values
+    t_bcg = df_bcg['Time_BCG'].values
+    ecg = df_ecg['ECG'].values
+    t_ecg = df_ecg['Time_ECG'].values
+
+    # -----------------------------
+    # --- Interactive sliders for BCG ---
+    # -----------------------------
+    st.subheader("Band-Pass Filter for BCG")
+    lowcut = st.slider("Low Cutoff Frequency (Hz)", 0.1, 10.0, 0.5, 0.1)
+    highcut = st.slider("High Cutoff Frequency (Hz)", 1.0, 60.0, 5.0, 0.5)
+
+    if lowcut >= highcut:
+        st.warning("⚠️ Low cutoff must be smaller than high cutoff")
+        bcg_filtered = bcg
+    else:
+        fs_bcg = 1 / np.mean(np.diff(t_bcg))  # BCG sampling rate
+        bcg_filtered = bandpass_filter(bcg, lowcut, highcut, fs_bcg)
+
+    # -----------------------------
+    # --- Interpolate BCG to ECG time ---
+    # -----------------------------
+    interp_bcg = interp1d(t_bcg, bcg_filtered, kind='linear', bounds_error=False, fill_value="extrapolate")
+    bcg_resampled = interp_bcg(t_ecg)
+
+    # -----------------------------
+    # --- Plot overlay ---
+    # -----------------------------
+    st.subheader("Signals Overlay")
+    fig, ax = plt.subplots(figsize=(10, 5))
+    ax.plot(t_ecg, ecg, label='ECG', color='red')
+    ax.plot(t_ecg, bcg_resampled, label='Filtered BCG', color='blue')
+    ax.set_xlabel("Time [s]")
+    ax.set_ylabel("Amplitude")
+    ax.legend()
+    st.pyplot(fig)
+
+    # -----------------------------
+    # --- Optional: download filtered BCG ---
+    # -----------------------------
+    df_filtered = pd.DataFrame({"Time": t_bcg, "BCG_filtered": bcg_filtered})
+    def to_excel(df):
+        output = BytesIO()
+        writer = pd.ExcelWriter(output, engine='openpyxl')
+        df.to_excel(writer, index=False, sheet_name='BCG_filtered')
+        writer.save()
+        return output.getvalue()
+
+    excel_data = to_excel(df_filtered)
+    st.download_button(
+        label="📥 Download Filtered BCG",
+        data=excel_data,
+        file_name=f"{subject}_BCG_filtered.xlsx",
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
