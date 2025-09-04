@@ -27,13 +27,15 @@ def log_scale(sig):
 # -----------------------------
 # --- Load Excel & Prepare Subjects ---
 # -----------------------------
-st.title("Interactive BCG + ECG Viewer (Single Excel)")
+st.title("Interactive BCG + ECG Viewer")
 
 excel_file = "Main_excel.xlsx"
 xl = pd.ExcelFile(excel_file)
 sheets = xl.sheet_names
 
 subjects = sorted(list(set([s.split('_')[0] for s in sheets])))
+st.markdown("<h3 style='font-weight:bold'>Select Subject</h3>", unsafe_allow_html=True)
+
 subject = st.selectbox("Select Subject", subjects)
 
 # -----------------------------
