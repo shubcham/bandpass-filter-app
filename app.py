@@ -62,7 +62,6 @@ except Exception as e:
 
 # HR display
 if isinstance(hr_value, (int, float)) and not np.isnan(hr_value):
-    st.markdown("<h3 style='font-weight:bold'>Select Subject</h3>", unsafe_allow_html=True)
     st.write(f"**Average Heart Rate:** {hr_value:.2f} BPM ({hr_value/60:.3f} Hz)")
     ecg_label = f'ECG, HR={hr_value/60:.3f} Hz'
 else:
@@ -116,20 +115,29 @@ ecg_vis = log_scale(ecg)
 st.subheader("Signals Overlay (Interactive)")
 
 fig = go.Figure()
-fig.add_trace(go.Scatter(x=t_ecg, y=ecg_vis, mode='lines', name=ecg_label, line=dict(color='red'), opacity=0.5))
-fig.add_trace(go.Scatter(x=t_ecg, y=bcg_vis, mode='lines', name='Filtered BCG', line=dict(color='blue')))
+fig.add_trace(go.Scatter(
+    x=t_ecg, y=ecg_vis, mode='lines', name=ecg_label,
+    line=dict(color='red'), opacity=0.5
+))
+fig.add_trace(go.Scatter(
+    x=t_ecg, y=bcg_vis, mode='lines', name='Filtered BCG',
+    line=dict(color='blue')
+))
 
 fig.update_layout(
     title="ECG and BCG Overlay",
+    title_font=dict(size=24, family="Arial", color="black"),  # Bigger title
     xaxis_title="Time [s]",
     yaxis_title="Amplitude (log-scaled)",
-    width=700,  # Reduced width from 1200 to 900
-    height=600,  # Kept height the same
-    margin=dict(l=40, r=40, t=60, b=40),  # Adjust margins
+    xaxis=dict(title_font=dict(size=20), tickfont=dict(size=16)),  # Bigger x-axis labels
+    yaxis=dict(title_font=dict(size=20), tickfont=dict(size=16)),  # Bigger y-axis labels
+    legend=dict(font=dict(size=16)),  # Bigger legend font
+    width=900,
+    height=600,
+    margin=dict(l=40, r=40, t=60, b=40),
     hovermode='x unified'
 )
 
-# Enable zooming, panning, and reset axes
 fig.update_xaxes(fixedrange=False)
 fig.update_yaxes(fixedrange=False)
 
