@@ -74,10 +74,10 @@ else:
 # -----------------------------
 # --- Display HR safely ---
 # -----------------------------
-if isinstance(hr_value, (int, float)) and not np.isnan(hr_value):
-    st.write(f"**Average Heart Rate:** {hr_value:.2f} Hz")
-else:
-    st.write("**Average Heart Rate:** Not available")
+# if isinstance(hr_value, (int, float)) and not np.isnan(hr_value):
+#     st.write(f"**Average Heart Rate:** {hr_value:.2f} Hz")
+# else:
+#     st.write("**Average Heart Rate:** Not available")
 
 
 # -----------------------------
@@ -109,7 +109,7 @@ ecg_norm = normalize_signal(ecg)
 
 # Determine legend label safely
 if isinstance(hr_value, (int, float)) and not np.isnan(hr_value):
-    ecg_label = f'ECG, HR={hr_value:.2f} Hz'
+    ecg_label = f'ECG, HR={hr_value/60:.3f} Hz'
 else:
     ecg_label = 'ECG, HR=NA'
 
