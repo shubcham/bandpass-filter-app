@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.signal import butter, filtfilt, find_peaks
+from scipy.signal import butter, filtfilt
 from scipy.interpolate import interp1d
 
 # -----------------------------
@@ -31,11 +31,13 @@ excel_file = "Main_excel.xlsx"
 xl = pd.ExcelFile(excel_file)
 sheets = xl.sheet_names
 
-# Extract unique subjects based on sheet naming: e.g., "sub1_BCG" -> "sub1"
+# Extract unique subjects based on sheet naming, e.g., "sub1_BCG" -> "sub1"
 subjects = sorted(list(set([s.split('_')[0] for s in sheets])))
 subject = st.selectbox("Select Subject", subjects)
 
-# Load BCG & ECG sheets for selected subject
+# -----------------------------
+# --- Load BCG & ECG Sheets ---
+# -----------------------------
 df_bcg = pd.read_excel(excel_file, sheet_name=f"{subject}_BCG")
 df_ecg = pd.read_excel(excel_file, sheet_name=f"{subject}_ECG")
 
@@ -45,21 +47,16 @@ ecg = df_ecg['ECG'].values
 t_ecg = df_ecg['Time_ECG'].values
 
 # -----------------------------
-# --- Calculate Average Heart Rate from ECG ---
+# --- Load HR from HR Sheet ---
 # -----------------------------
-# Simple R-peak detection
-peaks, _ = find_peaks(ecg, prominence=0.5 * np.std(ecg))
+try:
+    df_hr = pd.read_excel(excel_file, sheet_name=f"{subject}_HR")
+    hr_value = df_hr.iloc[1, 0]  # second row, first column
+except Exception as e:
+    st.warning(f"HR sheet not found or invalid format: {e}")
+    hr_value = np.nan
 
-if len(peaks) > 1:
-    rr_intervals = np.diff(t_ecg[peaks])
-    mean_rr = np.mean(rr_intervals)  # in seconds
-    avg_hr_hz = 1 / mean_rr          # Hz
-    avg_hr_bpm = avg_hr_hz * 60      # BPM
-else:
-    avg_hr_hz = np.nan
-    avg_hr_bpm = np.nan
-
-st.write(f"**Average Heart Rate:** {mean_rr:.5f} Hz ({avg_hr_bpm:.0f} BPM)")
+st.write(f"**Average Heart Rate:** {hr_value:.2f} Hz")
 
 # -----------------------------
 # --- Interactive sliders for BCG ---
@@ -92,7 +89,7 @@ ecg_norm = normalize_signal(ecg)
 # -----------------------------
 st.subheader("Signals Overlay")
 fig, ax = plt.subplots(figsize=(10, 5))
-ax.plot(t_ecg, ecg_norm, label=f'ECG, HR={avg_hr_hz:.2f} Hz', color='red', alpha=0.5)
+ax.plot(t_ecg, ecg_norm, label=f'ECG, HR={hr_value:.2f} Hz', color='red', alpha=0.5)
 ax.plot(t_ecg, bcg_norm, label='Filtered BCG', color='blue')
 ax.set_xlabel("Time [s]")
 ax.set_ylabel("Normalized Amplitude (0-1)")
